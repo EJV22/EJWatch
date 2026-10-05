@@ -19,6 +19,7 @@ EJWatch is a React-based movie and TV discovery application that uses the **TMDB
 - **CSS**
 - **TMDB API**
 - **Vite**
+- **Netlify**
 
 ## How It Works
 
