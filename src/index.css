@@ -1,0 +1,152 @@
+
+:root {
+
+    --text-color: black;
+    --header-color: #040b0e;
+    --background-color: rgb(253, 251, 247);
+    --brand1: #a92626;
+    --brand2: #EC9A29;
+}
+
+* {
+    font-family: poppins, Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    scroll-behavior: smooth;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    background-color: var(--background-color);
+}
+
+
+/*______________________________HEADER_______________________________*/
+header {
+
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    width: 100%;
+    background-color: var(--header-color);
+
+    >a h1 {
+        background: linear-gradient(45deg, var(--brand1), var(--brand2));
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        font-size: 36px;
+        font-weight: 800;
+        margin-left: 2rem;
+        cursor: pointer;
+    }
+}
+
+.header-btns {
+
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+}
+
+.header-btns i {
+    margin-left: auto;
+}
+
+.header-btns a {
+    color: var(--background-color);
+    position: relative;
+    font-size: 1.5rem;
+    font-weight: 500;
+        
+    &::before {
+        position: absolute;
+        content: "";
+        width: 0;
+        left: 0;
+        height: 5px;
+        bottom: 0;
+        transition: 0.2s ease-in-out;
+        border-radius: 10rem;
+        background: linear-gradient(to right, var(--brand1), var(--brand2));
+    }
+}
+
+.header-btns a:hover::before{
+    width: 100%;
+}
+
+
+/*______________________________SEARCH_______________________________*/
+
+.search {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    gap: 0.5rem;
+
+}
+
+.search i {
+    color: var(--background-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.5rem;
+    border-radius: 6px;
+    padding: 0.5rem 20px;
+    background-color: var(--header-color);
+    z-index: 1;
+    transition: 0.3s ease-in-out;
+}
+
+.search i:hover {
+    background-color: var(--background-color);
+    color: var(--color);
+
+}
+
+.search input {
+    cursor: I-beam;
+    visibility: visible;
+    transition: 0.2s ease-in-out;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 6px;
+    border: transparent;
+    height: 2rem;
+    background-color: var(--background-color);
+
+    &:focus {
+        outline: 2px solid var(--background-color);
+    }
+}
+
+.search input.hidden {
+    transform: translateX(-50px);
+    cursor: default;
+    opacity: 0;
+    padding-left: 0;
+    padding-right: 0;
+    border-width: 0;
+}
+
+
+/*______________________MOVIE-CONTAINER___________________________*/
+
+.movies-container {
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.movies-container .movie-poster img{
+
+    width: 20vw;
+}
