@@ -1,4 +1,4 @@
-import { useState, createContext } from "react";
+import { useState, useEffect, createContext } from "react";
 
 export const ApiContext = createContext();
 
@@ -43,6 +43,9 @@ function ContextProvider ({children}) {
             setMovies([]);
         }
     };
+
+    useEffect(() => {
+    search();   }, []);
 
     return (
 

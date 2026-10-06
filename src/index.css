@@ -50,10 +50,24 @@ header {
     align-items: center;
     gap: 2rem;
     width: 100%;
+
 }
 
 .header-btns i {
     margin-left: auto;
+    color: var(--background-color);
+}
+
+.header-btns .user {
+
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-right: 2rem;
+
+    >i {
+        font-size: 1.5rem;
+    }
 }
 
 .header-btns a {
@@ -111,7 +125,8 @@ header {
 }
 
 .search input {
-    cursor: I-beam;
+    width: 200px;
+    cursor: text;
     visibility: visible;
     transition: 0.2s ease-in-out;
     font-size: 1rem;
@@ -127,6 +142,7 @@ header {
 }
 
 .search input.hidden {
+    width: 0;
     transform: translateX(-50px);
     cursor: default;
     opacity: 0;
@@ -134,7 +150,6 @@ header {
     padding-right: 0;
     border-width: 0;
 }
-
 
 /*______________________MOVIE-CONTAINER___________________________*/
 

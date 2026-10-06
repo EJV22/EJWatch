@@ -54,14 +54,14 @@ function Header () {
                         tabIndex={0}
                         role="button"
                         onClick={() => {
-                            if (barHidden) {
+                            if (barHidden || !searchTerm.trim()) {
                                 setBarHidden(false);
                             } else {
                                 handleSearch();}
                         }}
                         onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
-                                if (barHidden){
+                                if (barHidden || !searchTerm.trim()){
                                     setBarHidden(false);
                                 }else {handleSearch();}}
                             }
@@ -77,6 +77,9 @@ function Header () {
                                 handleSearch();}}/>
                 </div>
 
+                <div className="user">
+                    <i className="fa-solid fa-user"></i>
+                </div>
             </div>
 
         </header>
