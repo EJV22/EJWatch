@@ -4,6 +4,9 @@ EJWatch is a React-based movie and TV discovery application powered by the [TMDB
 
 The project allows users to browse popular media, search for movies and TV shows, and view basic information such as posters, release dates, and media types.
 
+## Link for app:
+https://ejwatch.netlify.app/
+
 ## Features
 
 - Browse trending movies and TV shows
