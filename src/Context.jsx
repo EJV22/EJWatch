@@ -1,55 +1,49 @@
-import { useState, useEffect, createContext } from "react";
+import { createContext, useCallback, useContext, useRef, useState } from "react";
+import { tmdbFetch } from "./api.js";
 
-export const ApiContext = createContext();
+const ApiContext = createContext(null);
 
-function ContextProvider ({children}) {
+export function useApi() {
+    const ctx = useContext(ApiContext);
+    if (!ctx) throw new Error("useApi must be used inside <ContextProvider>");
+    return ctx;
+}
 
-    const ACCESS_TOKEN = import.meta.env.VITE_TMDB_API_ACCESS;
+function ContextProvider({ children }) {
+    const [items, setItems] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const controllerRef = useRef(null);
 
-    const API_URL = "https://api.themoviedb.org/3";
+    const load = useCallback(async (path) => {
+        controllerRef.current?.abort();
+        const controller = new AbortController();
+        controllerRef.current = controller;
 
-    const [movies, setMovies] = useState([]);
+        setLoading(true);
+        setError(null);
+        setItems([]);
 
-    const search = async (title, type) => {
-
-        let url;
-
-        if (!title && type === "movie") {
-            url = `${API_URL}/movie/popular`;
-        } else if (!title && type === "tv") {
-            url = `${API_URL}/tv/popular`;
-        } else if (!title) {
-            url = `${API_URL}/trending/all/day`;
-        } else if (type === "tv") {
-            url = `${API_URL}/search/tv?query=${encodeURIComponent(title)}`;
-        } else {
-            url = `${API_URL}/search/movie?query=${encodeURIComponent(title)}`;
+        try {
+            const data = await tmdbFetch(path, { signal: controller.signal });
+            setItems((data.results || []).filter((r) => r.media_type !== "person"));
+        } catch (err) {
+            if (err.name === "AbortError") return;
+            setError(err.message);
+        } finally {
+            if (controllerRef.current === controller) setLoading(false);
         }
+    }, []);
 
-        const response = await fetch(url, {
-            headers: {
-                accept: "application/json",
-                Authorization: `Bearer ${ACCESS_TOKEN}`
-            }
-        });
-
-        const data = await response.json();
-
-        console.log(data);
-
-        if (data.results) {
-            setMovies(data.results);
-        } else {
-            setMovies([]);
-        }
-    };
-
-    useEffect(() => {
-    search();   }, []);
+    const clear = useCallback(() => {
+        controllerRef.current?.abort();
+        setItems([]);
+        setError(null);
+        setLoading(false);
+    }, []);
 
     return (
-
-        <ApiContext.Provider value={ {API_URL, movies, search} }>
+        <ApiContext.Provider value={{ items, loading, error, load, clear }}>
             {children}
         </ApiContext.Provider>
     );
