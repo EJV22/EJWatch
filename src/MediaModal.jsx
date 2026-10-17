@@ -48,11 +48,7 @@ export default function MediaModal({ item, mediaType = "movie", onClose }) {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div
-        className="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-label={name}
+      <div className="modal" role="dialog" aria-modal="true" aria-label={name}
         onClick={(e) => e.stopPropagation()}
       >
         <button className="modal-close" onClick={onClose} aria-label="Close">
@@ -60,8 +56,7 @@ export default function MediaModal({ item, mediaType = "movie", onClose }) {
         </button>
 
         {d.backdrop_path && (
-          <div
-            className="modal-backdrop-img"
+          <div className="modal-backdrop-img"
             style={{ backgroundImage: `url(${BACKDROP}${d.backdrop_path})` }}
           />
         )}

@@ -4,15 +4,16 @@ import MediaModal from "./MediaModal.jsx";
 
 const IMG = "https://image.tmdb.org/t/p";
 
+ 
 const ROWS = [
     {
         title: "Trending Now",
-        endpoint: "/trending/all/week",
-        type: "movie",
+        endpoint: "/trending/all/week", 
+        type: "movie",                
         row: "features",
         card: "feature-card",
         buttons: "feature-buttons",
-        image: "backdrop_path",
+        image: "backdrop_path",   
         size: "w500",
     },
     {
@@ -22,7 +23,7 @@ const ROWS = [
         row: "recent",
         card: "recent-card",
         buttons: "recent-buttons",
-        image: "poster_path",
+        image: "poster_path",  
         size: "w342",
     },
     {
@@ -47,6 +48,7 @@ function CardRow({ config, onSelect }) {
 
         tmdbFetch(config.endpoint, { signal: controller.signal })
             .then((data) => {
+            
                 setItems(
                     (data.results || []).filter(
                         (item) => item.media_type !== "person" && item[config.image]

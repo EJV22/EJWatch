@@ -498,6 +498,40 @@ header {
     color: #aaa;
 }
 
+.load-more-wrap {
+
+    margin-top: 2rem;
+
+    display: flex;
+    justify-content: center;
+}
+
+.load-more {
+
+    padding: 0.75rem 2rem;
+
+    background: var(--text-color);
+    border-radius: var(--border-radius);
+
+    color: black;
+    font: inherit;
+    font-weight: 500;
+}
+
+.load-more:disabled {
+
+    opacity: 0.6;
+
+    cursor: default;
+}
+
+.load-more-error {
+
+    margin-top: 1rem;
+
+    text-align: center;
+}
+
 
 .site-footer {
 
@@ -776,12 +810,12 @@ header {
     z-index: 2;
 }
 
-.watch, .watch-now, .search-box button, .modal-trailer, .search-icon, .profile-icon, .menu-btn, .sidebar-close {
+.watch, .watch-now, .search-box button, .modal-trailer, .search-icon, .profile-icon, .menu-btn, .sidebar-close, .load-more {
 
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.watch:hover, .watch-now:hover, .search-box button:hover, .modal-trailer:hover {
+.watch:hover, .watch-now:hover, .search-box button:hover, .modal-trailer:hover, .load-more:hover:not(:disabled) {
 
     transform: translateY(-2px) scale(1.06);
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.25);
@@ -807,7 +841,7 @@ header {
     transform: translateY(0) scale(0.97);
 }
 
-.watch:active, .watch-now:active, .search-box button:active, .modal-trailer:active {
+.watch:active, .watch-now:active, .search-box button:active, .modal-trailer:active, .load-more:active:not(:disabled) {
 
     transform: translateY(0) scale(0.97);
 }
@@ -982,15 +1016,22 @@ header {
         font-size: 16px;
     }
 
+    .main-container {
+
+        padding-left: 24px;
+    }
+
     .feature-card {
 
         flex: 0 0 240px;
     }
 
-    .recent, .tv-shows {
+    .recent, .tv-shows, .features {
 
         gap: 18px;
         height: 240px;
+
+        padding-left: 0;
     }
 
     .recent-card, .tv-cards {
@@ -1021,6 +1062,7 @@ header {
     .profile-icon,
     .menu-btn,
     .sidebar-close,
+    .load-more,
     .selection > a,
     .genres-btn,
     .genres-btn i,
@@ -1043,6 +1085,7 @@ header {
     .profile-icon:hover,
     .menu-btn:hover,
     .sidebar-close:hover,
+    .load-more:hover,
     .selection > a:hover,
     .genres-btn:hover {
 

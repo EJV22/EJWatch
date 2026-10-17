@@ -1,19 +1,33 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useParams, useSearchParams } from "react-router-dom";
-import { useApi } from "./Context.jsx";
+import { tmdbFetch } from "./api.js";
 import MediaModal from "./MediaModal.jsx";
 
 const IMG = "https://image.tmdb.org/t/p/w342";
+const MAX_PAGES = 500;  
 
+const keyOf = (item, mode) => `${item.media_type || mode}-${item.id}`;
+
+ 
+const withPage = (path, n) => `${path}${path.includes("?") ? "&" : "?"}page=${n}`;
+
+ 
 function MediaPage({ mode }) {
     const { id } = useParams();
     const [params] = useSearchParams();
     const location = useLocation();
     const q = params.get("q") || "";
 
-    const { items, loading, error, load, clear } = useApi();
+    const [items, setItems] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [error, setError] = useState(null);
+    const [moreError, setMoreError] = useState(null);
     const [selected, setSelected] = useState(null);
 
+ 
     let path;
     let title;
     if (mode === "movie") {
@@ -29,14 +43,70 @@ function MediaPage({ mode }) {
         path = `/search/multi?query=${encodeURIComponent(q)}`;
         title = `Results for "${q}"`;
     }
+ 
+
+    const pathRef = useRef(path);
+    pathRef.current = path;
+ 
 
     useEffect(() => {
+        setPage(1);
+        setTotalPages(1);
+        setMoreError(null);
+
         if (mode === "search" && !q.trim()) {
-            clear();
+            setItems([]);
+            setLoading(false);
             return;
         }
-        load(path);
-    }, [mode, path, q, load, clear]);
+
+        const controller = new AbortController();
+        setLoading(true);
+        setError(null);
+
+        tmdbFetch(path, { signal: controller.signal })
+            .then((data) => {
+               
+                setItems((data.results || []).filter((r) => r.media_type !== "person"));
+                setTotalPages(data.total_pages || 1);
+                setLoading(false);
+            })
+            .catch((err) => {
+                if (err.name === "AbortError") return;
+                setError(err.message);
+                setLoading(false);
+            });
+
+        return () => controller.abort();
+    }, [path, mode, q]);
+
+   
+    const loadMore = async () => {
+        const requestedPath = path;
+        const next = page + 1;
+
+        setLoadingMore(true);
+        setMoreError(null);
+
+        try {
+            const data = await tmdbFetch(withPage(requestedPath, next));
+            if (pathRef.current !== requestedPath) return;   
+
+            const fresh = (data.results || []).filter((r) => r.media_type !== "person");
+            setItems((prev) => {
+                const seen = new Set(prev.map((i) => keyOf(i, mode)));
+                return [...prev, ...fresh.filter((i) => !seen.has(keyOf(i, mode)))];
+            });
+            setPage(next);
+            setTotalPages(data.total_pages || totalPages);
+        } catch (err) {
+            if (pathRef.current === requestedPath) setMoreError(err.message);
+        } finally {
+            setLoadingMore(false);
+        }
+    };
+
+    const hasMore = page < Math.min(totalPages, MAX_PAGES);
 
     return (
         <main className="media-page">
@@ -52,7 +122,7 @@ function MediaPage({ mode }) {
 
                     return (
                         <div
-                            key={`${item.media_type || mode}-${item.id}`}
+                            key={keyOf(item, mode)}
                             className="media-card cards"
                             onClick={() => setSelected(item)}
                         >
@@ -80,6 +150,23 @@ function MediaPage({ mode }) {
                     );
                 })}
             </div>
+
+            {!loading && !error && items.length > 0 && hasMore && (
+                <div className="load-more-wrap">
+                    <button
+                        type="button"
+                        className="load-more"
+                        onClick={loadMore}
+                        disabled={loadingMore}
+                    >
+                        {loadingMore ? "Loading..." : "Load more"}
+                    </button>
+                </div>
+            )}
+
+            {moreError && (
+                <p className="load-more-error">Couldn't load more: {moreError}</p>
+            )}
 
             <MediaModal
                 item={selected}
